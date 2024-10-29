@@ -1,4 +1,4 @@
-# Node.js
+# default
 node_modules/
 .env
 
@@ -17,7 +17,13 @@ server/node_modules/
 
 # Environment variables
 client/.env
+client/.env.dev
+client/.env.prod
+client/.env.*
 server/.env
+server/.env.dev
+server/.env.prod
+server/.env.*
 
 # IDE/Editor specific
 .vscode/
