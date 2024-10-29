@@ -1,0 +1,25 @@
+# Node.js
+node_modules/
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Build
+dist/
+build/
+
+# Dependency directories
+client/node_modules/
+server/node_modules/
+
+# Environment variables
+client/.env
+server/.env
+
+# IDE/Editor specific
+.vscode/
+.idea/
+.DS_Store
