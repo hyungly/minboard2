@@ -1,13 +1,16 @@
 import dotenv from 'dotenv';
 
-// 실행 환경에 맞게 환경 변수 파일을 로드
+// NODE_ENV 환경 변수에 따라 파일 로드
 if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: '.env.prod' });
 } else {
   dotenv.config({ path: '.env.dev' });
 }
 
-import express from 'express';
-import passport from '../src/config/passport'; // 예시로 추가
+import app from './app';
 
-const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
