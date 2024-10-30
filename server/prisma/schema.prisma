@@ -8,12 +8,16 @@ datasource db {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  username String   @unique
-  email    String   @unique
-  password String
-  posts    Post[]
-  comments Comment[]
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
+  email        String    @unique
+  password     String
+  nickname     String?
+  profile_image String?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  posts        Post[]
+  comments     Comment[]
 }
 
 model Post {

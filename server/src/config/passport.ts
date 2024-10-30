@@ -5,9 +5,9 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
 dotenv.config(); // 환경 변수 로드
-
-console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
-console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET);
+//확인용 콘솔로그 
+// console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
+// console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET);
 
 // 기본 인증과 OAuth2.0 모두 지원하도록 설계
 const prisma = new PrismaClient();

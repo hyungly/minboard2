@@ -3,7 +3,7 @@ import { findUserByEmail, createUser } from '../models/userModel';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; //나중에 떠오르면 적기
 
 export const register = async (userData: CreateUserDTO): Promise<UserResponseDTO> => {
   const existingUser = await findUserByEmail(userData.email);
