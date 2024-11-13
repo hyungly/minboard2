@@ -1,6 +1,6 @@
 // app.ts
 import dotenv from 'dotenv';
-dotenv.config({ path: './.env.dev' });
+dotenv.config();
 
 import express from 'express';
 import passport from 'passport';

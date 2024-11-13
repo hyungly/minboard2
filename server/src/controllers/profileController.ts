@@ -6,7 +6,8 @@ export const getProfile = async (req: Request, res: Response, next: NextFunction
   const userId = (req as any).user.userId;
 
   try {
-    const userProfile = await getUserProfile(userId);
+    // userId가 string일 경우 number로 변환
+    const userProfile = await getUserProfile(Number(userId));
     res.status(200).json(userProfile);
   } catch (error) {
     next(error);
@@ -18,7 +19,8 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
   const updateData = req.body;
 
   try {
-    const updatedProfile = await updateUserProfile(userId, updateData);
+    // userId가 string일 경우 number로 변환
+    const updatedProfile = await updateUserProfile(Number(userId), updateData);
     res.status(200).json(updatedProfile);
   } catch (error) {
     next(error);

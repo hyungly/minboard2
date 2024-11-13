@@ -1,7 +1,6 @@
 // config.ts
 import dotenv from 'dotenv';
-
-dotenv.config({ path: './.env.dev' });
+dotenv.config();
 
 export const config = {
   jwtSecret: process.env.JWT_SECRET || (() => { throw new Error("JWT_SECRET이 환경 변수에 없습니다."); })(),
