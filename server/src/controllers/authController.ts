@@ -1,26 +1,23 @@
+// authController.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
+import { config } from '../config';
 
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 // 사용자 등록
-export const register = async (req: Request, res: Response): Promise<void> => {
+export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { username, email, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
-      data: {
-        username,
-        email,
-        password: hashedPassword,
-      },
+      data: { username, email, password: hashedPassword },
     });
     res.status(201).json(user);
   } catch (error) {
-    res.status(400).json({ error: 'User registration failed' });
+    next(new Error('User registration failed.'));
   }
 };
 
@@ -30,18 +27,22 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
   try {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      res.status(401).json({ error: 'Invalid email or password' });
-      return;
+      throw new Error('Invalid credentials');
     }
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user.id }, config.jwtSecret, { expiresIn: process.env.JWT_EXPIRY || '1h' });
     res.json({ token });
   } catch (error) {
-    next(error);
+    next(new Error('Authentication failed.'));
   }
 };
 
-// 사용자 로그아웃 및 기타 인증 관련 로직 추가 가능
-export const logout = (req: Request, res: Response): void => {
-  // 로그아웃 로직 (필요에 따라 구현)
-  res.status(204).send();
+// Google OAuth 콜백 핸들러
+export const googleCallback = (req: Request, res: Response, next: NextFunction): void => {
+  try {
+    const user = req.user as any;
+    const token = jwt.sign({ userId: user.id }, config.jwtSecret, { expiresIn: process.env.JWT_EXPIRY || '1h' });
+    res.json({ token });
+  } catch (error) {
+    next(new Error('Google authentication failed.'));
+  }
 };
