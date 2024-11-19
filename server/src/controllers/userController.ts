@@ -1,17 +1,65 @@
-import { Request, Response } from 'express';
+// src/controllers/userController.ts
+import { Request, Response, NextFunction } from 'express';
+import {
+  getUserById,
+  getAllUsers,
+  updateUserProfile,
+  removeUser,
+} from '../services/userService';
+import { UpdateUserDTO } from '../DTOs/userDTO';
 
-export const register = async (req: Request, res: Response) => {
-  // 사용자 등록 로직
+export const getUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = parseInt(req.params.id, 10);
+    const user = await getUserById(userId);
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const login = async (req: Request, res: Response) => {
-  // 사용자 로그인 로직
+export const listUsers = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const users = await getAllUsers();
+    res.json(users);
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const logout = async (req: Request, res: Response) => {
-  // 사용자 로그아웃 로직
+export const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = parseInt(req.params.id, 10);
+    const userData: UpdateUserDTO = req.body;
+    const updatedUser = await updateUserProfile(userId, userData);
+    res.json(updatedUser);
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const getUser = async (req: Request, res: Response) => {
-  // 사용자 정보 조회 로직
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = parseInt(req.params.id, 10);
+    await removeUser(userId);
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
 };

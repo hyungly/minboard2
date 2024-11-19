@@ -1,21 +1,26 @@
+// src/models/userModel.ts
 import { PrismaClient, User } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const findUserByEmail = async (email: string) => {
-  const user = await prisma.user.findUnique({
-    where: { email },
-    select: {
-      id: true,
-      username: true,
-      email: true,
-      password: true,
-      role: true,
-    }, // role 추가
-  });
-  return user;
+export const findUserById = async (userId: number): Promise<User | null> => {
+  return await prisma.user.findUnique({ where: { id: userId } });
 };
 
-export const createUser = async (userData: any): Promise<User> => {
-  return prisma.user.create({ data: userData });
+export const findAllUsers = async (): Promise<User[]> => {
+  return await prisma.user.findMany();
+};
+
+export const updateUser = async (
+  userId: number,
+  userData: Partial<User>
+): Promise<User | null> => {
+  return await prisma.user.update({
+    where: { id: userId },
+    data: userData,
+  });
+};
+
+export const deleteUser = async (userId: number): Promise<User | null> => {
+  return await prisma.user.delete({ where: { id: userId } });
 };
