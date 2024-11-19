@@ -2,7 +2,9 @@ import { CreateUserDTO, UserResponseDTO } from '../DTOs/userDTO';
 import { findUserByEmail, createUser } from '../models/userModel';
 import bcrypt from 'bcrypt';
 
-export const registerUser = async (userData: CreateUserDTO): Promise<UserResponseDTO> => {
+export const registerUser = async (
+  userData: CreateUserDTO
+): Promise<UserResponseDTO> => {
   const existingUser = await findUserByEmail(userData.email);
 
   if (existingUser) {

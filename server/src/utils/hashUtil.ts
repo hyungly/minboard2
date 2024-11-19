@@ -18,7 +18,10 @@ export const hashPassword = async (password: string): Promise<string> => {
  * @param hashedPassword 해시된 비밀번호
  * @returns 비밀번호 일치 여부 확인
  */
-export const comparePassword = async (password: string, hashedPassword: string): Promise<boolean> => {
+export const comparePassword = async (
+  password: string,
+  hashedPassword: string
+): Promise<boolean> => {
   const isMatch = await bcrypt.compare(password, hashedPassword);
   return isMatch;
 };

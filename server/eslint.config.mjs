@@ -1,18 +1,18 @@
-import globals from "globals";
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
-import prettier from "eslint-plugin-prettier";
+import globals from 'globals';
+import pluginJs from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import prettier from 'eslint-plugin-prettier';
 
 export default [
   {
-    files: ["**/*.{js,mjs,cjs,ts}"],
+    files: ['**/*.{js,mjs,cjs,ts}'],
   },
   {
     languageOptions: {
-      parser: "@typescript-eslint/parser",
+      parser: '@typescript-eslint/parser',
       parserOptions: {
         ecmaVersion: 2020,
-        sourceType: "module",
+        sourceType: 'module',
       },
       globals: {
         ...globals.node,
@@ -26,7 +26,7 @@ export default [
       prettier,
     },
     rules: {
-      "prettier/prettier": "error", // Prettier 설정 적용
+      'prettier/prettier': 'error', // Prettier 설정 적용
     },
   },
 ];

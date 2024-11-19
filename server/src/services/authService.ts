@@ -6,7 +6,9 @@ import jwt from 'jsonwebtoken';
 import { config } from '../config';
 
 // 사용자 등록
-export const register = async (userData: CreateUserDTO): Promise<UserResponseDTO> => {
+export const register = async (
+  userData: CreateUserDTO
+): Promise<UserResponseDTO> => {
   const existingUser = await findUserByEmail(userData.email);
   if (existingUser) {
     throw new Error('User already exists.');
@@ -18,14 +20,14 @@ export const register = async (userData: CreateUserDTO): Promise<UserResponseDTO
   const newUser = await createUser({
     ...userData,
     password: hashedPassword,
-    role: 'user' // 'user' 기본값 설정
+    role: 'user', // 'user' 기본값 설정
   });
 
   return {
     id: newUser.id,
     username: newUser.username,
     email: newUser.email,
-    role: newUser.role // 반환되는 객체에 role 필드 포함
+    role: newUser.role, // 반환되는 객체에 role 필드 포함
   };
 };
 
@@ -48,6 +50,8 @@ export const login = async (credentials: LoginUserDTO): Promise<string> => {
   };
 
   // 토큰 생성, 만료 시간 설정
-  const token = jwt.sign(payload, config.jwtSecret, { expiresIn: process.env.JWT_EXPIRY || '1h' });
+  const token = jwt.sign(payload, config.jwtSecret, {
+    expiresIn: process.env.JWT_EXPIRY || '1h',
+  });
   return token;
 };

@@ -11,7 +11,10 @@ export const findPostById = async (id: number): Promise<Post | null> => {
   return prisma.post.findUnique({ where: { id } });
 };
 
-export const updatePost = async (id: number, updateData: any): Promise<Post> => {
+export const updatePost = async (
+  id: number,
+  updateData: any
+): Promise<Post> => {
   return prisma.post.update({
     where: { id },
     data: updateData,

@@ -1,7 +1,18 @@
-import { CreateCommentDTO, UpdateCommentDTO, CommentResponseDTO } from '../DTOs/commentDTO';
-import { createComment, findCommentById, updateComment, deleteComment } from '../models/commentModel';
+import {
+  CreateCommentDTO,
+  UpdateCommentDTO,
+  CommentResponseDTO,
+} from '../DTOs/commentDTO';
+import {
+  createComment,
+  findCommentById,
+  updateComment,
+  deleteComment,
+} from '../models/commentModel';
 
-export const addComment = async (commentData: CreateCommentDTO): Promise<CommentResponseDTO> => {
+export const addComment = async (
+  commentData: CreateCommentDTO
+): Promise<CommentResponseDTO> => {
   const newComment = await createComment(commentData);
   return newComment;
 };
@@ -14,7 +25,10 @@ export const getComment = async (id: number): Promise<CommentResponseDTO> => {
   return comment;
 };
 
-export const editComment = async (id: number, updateData: UpdateCommentDTO): Promise<CommentResponseDTO> => {
+export const editComment = async (
+  id: number,
+  updateData: UpdateCommentDTO
+): Promise<CommentResponseDTO> => {
   const updatedComment = await updateComment(id, updateData);
   return updatedComment;
 };

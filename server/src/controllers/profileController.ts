@@ -2,7 +2,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { getUserProfile, updateUserProfile } from '../services/profileService';
 
-export const getProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const userId = (req as any).user.userId;
 
   try {
@@ -14,7 +18,11 @@ export const getProfile = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-export const updateProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const updateProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const userId = (req as any).user.userId;
   const updateData = req.body;
 
