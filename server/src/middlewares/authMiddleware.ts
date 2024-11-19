@@ -4,7 +4,12 @@ import { config } from '../config'; // 환경 변수
 
 // Request 객체 확장: 사용자 정보를 포함
 interface AuthenticatedRequest extends Request {
-  user?: Record<string, any>; // JWT에서 디코딩된 사용자 정보의 타입
+  user?: {
+    userId: number;
+    username: string;
+    email: string;
+    role: string;
+  };
 }
 
 // 토큰 추출 함수
@@ -30,10 +35,15 @@ export const authenticateJWT = async (
     }
 
     // jwt.verify를 비동기로 처리
-    const decoded = jwt.verify(token, config.jwtSecret);
-    req.user = decoded as Record<string, any>; // 사용자 정보 추가
+    const decoded = jwt.verify(token, config.jwtSecret) as {
+      userId: number;
+      username: string;
+      email: string;
+      role: string;
+    };
+    req.user = decoded; // 사용자 정보 추가
     next(); // 다음 미들웨어로 이동
-  } catch (err) {
+  } catch {
     res.status(401).json({ message: 'Invalid or expired token' });
   }
 };

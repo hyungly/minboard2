@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { config } from '../config';
 import { findUserByEmail, createUser } from '../models/authModel';
 import { CreateUserDTO, LoginUserDTO, UserResponseDTO } from '../DTOs/userDTO';
+import { User } from '@prisma/client';
 
 // 사용자 등록
 export const registerUser = async (
@@ -48,7 +49,7 @@ export const loginUser = async (credentials: LoginUserDTO): Promise<string> => {
 };
 
 // Google OAuth 콜백 핸들러
-export const handleGoogleCallback = (user: any): string => {
+export const handleGoogleCallback = (user: User): string => {
   const token = jwt.sign({ userId: user.id }, config.jwtSecret, {
     expiresIn: process.env.JWT_EXPIRY || '1h',
   });

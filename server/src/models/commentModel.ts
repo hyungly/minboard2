@@ -1,9 +1,11 @@
-// commentModel.ts
 import { PrismaClient, Comment } from '@prisma/client';
+import { CreateCommentDTO, UpdateCommentDTO } from '../DTOs/commentDTO';
 
 const prisma = new PrismaClient();
 
-export const createComment = async (commentData: any): Promise<Comment> => {
+export const createComment = async (
+  commentData: CreateCommentDTO
+): Promise<Comment> => {
   return prisma.comment.create({ data: commentData });
 };
 
@@ -13,7 +15,7 @@ export const findCommentById = async (id: number): Promise<Comment | null> => {
 
 export const updateComment = async (
   id: number,
-  updateData: any
+  updateData: UpdateCommentDTO
 ): Promise<Comment> => {
   return prisma.comment.update({
     where: { id },

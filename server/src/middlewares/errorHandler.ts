@@ -1,5 +1,4 @@
-// middlewares/errorHandler.ts
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 
 interface AppError extends Error {
   statusCode?: number; // 상태 코드를 추가로 지정할 수 있도록 확장
@@ -8,8 +7,7 @@ interface AppError extends Error {
 export const errorHandler = (
   err: AppError,
   req: Request,
-  res: Response,
-  next: NextFunction
+  res: Response
 ): void => {
   console.error(err.stack); // 개발 중에는 스택 트레이스 출력
 
