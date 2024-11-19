@@ -1,29 +1,39 @@
-// authMiddleware.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../config'; // 환경 변수
 
+// Request 객체 확장: 사용자 정보를 포함
+interface AuthenticatedRequest extends Request {
+  user?: Record<string, any>; // JWT에서 디코딩된 사용자 정보의 타입
+}
+
+// 토큰 추출 함수
+const extractToken = (req: Request): string | null => {
+  const authHeader = req.headers['authorization'];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    return authHeader.split(' ')[1];
+  }
+  return req.cookies.token || null; // 쿠키에서 토큰 추출
+};
+
 // JWT 인증 미들웨어
-export const authenticateJWT = (
-  req: Request,
+export const authenticateJWT = async (
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-): void => {
-  const token =
-    req.cookies.token || req.headers['authorization']?.split(' ')[1]; // token 추출
-
-  if (!token) {
-    res.status(403).json({ message: 'Access Denied' }); // 토큰 없으면 접근 거부
-    return; // 여기서 함수를 종료하여 더 이상의 처리를 하지 않도록 합니다.
-  }
-
-  jwt.verify(token, config.jwtSecret, (err, decoded) => {
-    if (err) {
-      res.status(401).json({ message: 'Invalid or expired token' }); // 토큰 오류 시
-      return; // 오류 발생 시 함수 종료
+): Promise<void> => {
+  try {
+    const token = extractToken(req);
+    if (!token) {
+      res.status(403).json({ message: 'Access Denied: No token provided' });
+      return; // 함수 종료
     }
-    // JWT에서 사용자 정보 추출하여 req.user에 추가
-    (req as any).user = decoded;
+
+    // jwt.verify를 비동기로 처리
+    const decoded = jwt.verify(token, config.jwtSecret);
+    req.user = decoded as Record<string, any>; // 사용자 정보 추가
     next(); // 다음 미들웨어로 이동
-  });
+  } catch (err) {
+    res.status(401).json({ message: 'Invalid or expired token' });
+  }
 };

@@ -1,9 +1,10 @@
-// postModel.ts
+//postModel.ts
 import { PrismaClient, Post } from '@prisma/client';
+import { CreatePostDTO, UpdatePostDTO } from '../DTOs/postDTO';
 
 const prisma = new PrismaClient();
 
-export const createPost = async (postData: any): Promise<Post> => {
+export const createPost = async (postData: CreatePostDTO): Promise<Post> => {
   return prisma.post.create({ data: postData });
 };
 
@@ -13,7 +14,7 @@ export const findPostById = async (id: number): Promise<Post | null> => {
 
 export const updatePost = async (
   id: number,
-  updateData: any
+  updateData: UpdatePostDTO
 ): Promise<Post> => {
   return prisma.post.update({
     where: { id },

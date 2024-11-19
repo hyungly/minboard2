@@ -28,6 +28,8 @@ model Post {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   userId    Int
+  likesCount  Int      @default(0) // 좋아요 수 필드 추가
+  status      String   @default("active") // 상태 필드 추가
   user      User      @relation(fields: [userId], references: [id]) // Post와 User 간의 N:1 관계
   comments  Comment[] // Post와 Comment 간의 1:N 관계
 }

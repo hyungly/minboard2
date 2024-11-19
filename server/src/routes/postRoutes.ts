@@ -1,3 +1,4 @@
+//postRoute.ts
 import { Router } from 'express';
 import {
   createPost,
@@ -5,12 +6,13 @@ import {
   updatePost,
   deletePost,
 } from '../controllers/postController';
+import { authenticateJWT } from '../middlewares/authMiddleware';
 
 const router = Router();
 
-router.post('/', createPost);
+router.post('/', authenticateJWT, createPost);
 router.get('/:id', getPost);
-router.put('/:id', updatePost);
-router.delete('/:id', deletePost);
+router.put('/:id', authenticateJWT, updatePost);
+router.delete('/:id', authenticateJWT, deletePost);
 
 export default router;

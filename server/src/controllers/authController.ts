@@ -1,27 +1,21 @@
 // authController.ts
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client';
-import { config } from '../config';
-
-const prisma = new PrismaClient();
+import { registerUser, loginUser } from '../services/authService';
+import { CreateUserDTO, LoginUserDTO } from '../DTOs/userDTO';
+import { handleGoogleCallback } from '../services/authService';
 
 // 사용자 등록
 export const register = async (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<void> => {
-  const { username, email, password } = req.body;
+) => {
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
-      data: { username, email, password: hashedPassword },
-    });
-    res.status(201).json(user);
+    const userData: CreateUserDTO = req.body;
+    const newUser = await registerUser(userData);
+    res.status(201).json(newUser);
   } catch (error) {
-    next(new Error('User registration failed.'));
+    next(error);
   }
 };
 
@@ -30,33 +24,25 @@ export const login = async (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<void> => {
-  const { email, password } = req.body;
+) => {
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new Error('Invalid credentials');
-    }
-    const token = jwt.sign({ userId: user.id }, config.jwtSecret, {
-      expiresIn: process.env.JWT_EXPIRY || '1h',
-    });
+    const credentials: LoginUserDTO = req.body;
+    const token = await loginUser(credentials);
     res.json({ token });
   } catch (error) {
-    next(new Error('Authentication failed.'));
+    next(error);
   }
 };
 
-// Google OAuth 콜백 핸들러
+//Google 콜백
 export const googleCallback = (
   req: Request,
   res: Response,
   next: NextFunction
 ): void => {
   try {
-    const user = req.user as any;
-    const token = jwt.sign({ userId: user.id }, config.jwtSecret, {
-      expiresIn: process.env.JWT_EXPIRY || '1h',
-    });
+    const user = req.user as any; // OAuth 인증 후 전달된 사용자 정보
+    const token = handleGoogleCallback(user); // 서비스 호출
     res.json({ token });
   } catch (error) {
     next(new Error('Google authentication failed.'));
