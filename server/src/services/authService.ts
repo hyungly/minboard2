@@ -1,4 +1,3 @@
-// authService.ts
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { config } from '../config';
@@ -25,6 +24,7 @@ export const registerUser = async (
     username: newUser.username,
     email: newUser.email,
     role: newUser.role ?? 'user',
+    createdAt: newUser.createdAt, // createdAt 필드 추가
   };
 };
 

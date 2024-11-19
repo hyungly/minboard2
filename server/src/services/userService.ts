@@ -15,6 +15,7 @@ export const getUserById = async (userId: number): Promise<UserResponseDTO> => {
     username: user.username,
     email: user.email,
     role: user.role,
+    createdAt: user.createdAt, // createdAt 추가
   };
 };
 
@@ -25,6 +26,9 @@ export const getAllUsers = async (): Promise<UserResponseDTO[]> => {
     username: user.username,
     email: user.email,
     role: user.role,
+    nickname: user.nickname,
+    profileImage: user.profileImage,
+    createdAt: user.createdAt, // createdAt 추가
   }));
 };
 
@@ -39,6 +43,7 @@ export const updateUserProfile = async (
     username: updatedUser.username,
     email: updatedUser.email,
     role: updatedUser.role,
+    createdAt: updatedUser.createdAt, // createdAt 추가
   };
 };
 

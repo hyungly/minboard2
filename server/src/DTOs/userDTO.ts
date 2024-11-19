@@ -15,7 +15,11 @@ export interface UserResponseDTO {
   id: number;
   username: string;
   email: string;
-  role: string; // 역할 추가
+  role: string;
+  nickname?: string;  // 선택적 필드
+  profileImage?: string;  // 선택적 필드
+  createdAt: Date; 
+  updatedAt?: Date;
 }
 
 // 사용자 업데이트를 위한 DTO
