@@ -1,11 +1,17 @@
+import { AppProps } from 'next/app';
+import { UserProvider } from '@/components/UserContext';
 import '@/styles/globals.css';
-import type { AppProps } from 'next/app';
-import { RecoilRoot } from 'recoil';
+import Header from '../components/Header'; // 다크모드 토글 버튼 포함
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <RecoilRoot>
-      <Component {...pageProps} />;
-    </RecoilRoot>
+    <UserProvider>
+      <div className="min-h-screen bg-background text-foreground">
+        <Header />
+        <main className="container mx-auto p-4">
+          <Component {...pageProps} />
+        </main>
+      </div>
+    </UserProvider>
   );
 }
