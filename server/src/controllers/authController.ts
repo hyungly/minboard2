@@ -1,8 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
-import { registerUser, loginUser } from '../services/authService';
+import {
+  registerUser,
+  loginUser,
+  sendVerificationCode,
+  verifyCode,
+} from '../services/authService';
 import { CreateUserDTO, LoginUserDTO } from '../DTOs/userDTO';
 import { handleGoogleCallback } from '../services/authService';
-import { User } from '@prisma/client'; // Prisma User 모델 타입 임포트
+import { User } from '@prisma/client';
 
 // 사용자 등록
 export const register = async (
@@ -43,11 +48,44 @@ export const googleCallback = (
   next: NextFunction
 ): void => {
   try {
-    const user = req.user as User; // Prisma User 타입으로 명시적 캐스팅
-    const token = handleGoogleCallback(user); // 서비스 호출
+    const user = req.user as User;
+    const token = handleGoogleCallback(user);
     res.json({ token });
   } catch (error) {
     console.error('Google authentication failed:', error);
     next(new Error('Google authentication failed.'));
+  }
+};
+
+// 인증번호 발송
+export const handleSendVerificationCode = async (
+  req: Request,
+  res: Response
+) => {
+  const { email } = req.body;
+
+  try {
+    const verificationCode = await sendVerificationCode(email);
+    res.status(200).json({ code: verificationCode });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to send email' });
+  }
+};
+
+// 인증번호 확인
+export const handleVerifyCode = (req: Request, res: Response) => {
+  const { email, inputCode } = req.body;
+
+  try {
+    const isValid = verifyCode(email, inputCode);
+    if (isValid) {
+      res.status(200).json({ message: 'Verification successful' });
+    } else {
+      res.status(400).json({ message: 'Verification failed' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Verification process failed' });
   }
 };
