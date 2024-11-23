@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  username    String
+  email       String    @unique
+  password    String
+  nickname    String?
+  profileImage String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  role        String    @default("user")  // 기본값은 'user'
+  posts       Post[]    // User와 Post 간의 1:N 관계
+  comments    Comment[] // User와 Comment 간의 1:N 관계
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  userId    Int
+  likesCount  Int      @default(0) // 좋아요 수 필드 추가
+  status      String   @default("active") // 상태 필드 추가
+  user      User      @relation(fields: [userId], references: [id]) // Post와 User 간의 N:1 관계
+  comments  Comment[] // Post와 Comment 간의 1:N 관계
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  content   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id]) // Comment와 User 간의 N:1 관계
+  postId    Int
+  post      Post      @relation(fields: [postId], references: [id]) // Comment와 Post 간의 N:1 관계
+}

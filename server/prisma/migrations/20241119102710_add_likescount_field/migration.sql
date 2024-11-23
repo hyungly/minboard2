@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `Post` ADD COLUMN `likesCount` INTEGER NOT NULL DEFAULT 0,
+    ADD COLUMN `status` VARCHAR(191) NOT NULL DEFAULT 'active';
