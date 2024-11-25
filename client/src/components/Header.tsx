@@ -1,100 +1,91 @@
-import { useUser } from '@/components/UserContext';
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useRecoilState } from "recoil";
+import { authState } from "@/stores/atoms";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Switch } from "@nextui-org/react";
+import { SunIcon, MoonIcon } from "@heroicons/react/24/outline";
+import { useTheme as useNextTheme } from "next-themes";
+// import { AcmeLogo } from "@/AcmeLogo";
 
-const Header = () => {
-  const { user, logout } = useUser();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMobileView, setIsMobileView] = useState(false);
+export default function Header() {
+  const { theme, setTheme } = useNextTheme();
+  const [auth, setAuth] = useRecoilState(authState); // 로그인 상태
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobileView(window.innerWidth < 768);
-      if (window.innerWidth >= 768) {
-        setIsMenuOpen(false); // 모바일 뷰가 아니면 메뉴를 닫기
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  const toggleMenu = () => {
-    if (isMobileView) {
-      setIsMenuOpen(!isMenuOpen);
-    }
+  const handleLogout = () => {
+    setAuth({ isAuthenticated: false, user: null }); // 로그아웃 처리
+    // 추가적으로 로그아웃 API 호출이 필요할 수 있음
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 flex items-center justify-between p-2 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 z-50">
-      <Link href="/">
-        <h1 className="text-xl cursor-pointer">Minboard</h1>
-      </Link>
-      <div className="flex items-center">
-        {isMobileView && (
-          <button
-            className="md:hidden px-4 py-2 bg-blue-500 text-white rounded"
-            onClick={toggleMenu}
-          >
-            ☰
-          </button>
-        )}
-        <nav
-          className={`fixed top-0 right-0 w-40 bg-gray-100 dark:bg-gray-900
-          ${isMobileView ? (isMenuOpen ? 'block pt-16' : 'hidden') : 'flex items-center md:static md:w-auto md:bg-transparent'}`}
-        >
-          <div className="flex flex-col md:flex-row items-center">
-            {user ? (
-              <>
-                <span className="mb-4 md:mb-0 md:mr-4">{user.username} 님</span>
-                <Link href="/post">
-                  <button className="px-4 py-2 bg-green-500 text-white rounded mb-4 md:mb-0 md:mr-4">
-                    게시판
-                  </button>
-                </Link>
-                <Link href="/profile">
-                  <button className="px-4 py-2 bg-green-500 text-white rounded mb-4 md:mb-0 md:mr-4">
-                    프로필 수정
-                  </button>
-                </Link>
-                <button
-                  className="px-4 py-2 bg-red-500 text-white rounded"
-                  onClick={logout}
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href="/login">
-                  <button className="px-4 py-2 bg-blue-500 text-white rounded mb-4 md:mb-0 md:mr-4">
-                    Login
-                  </button>
-                </Link>
-                <Link href="/register">
-                  <button className="px-4 py-2 bg-green-500 text-white rounded">
-                    회원가입
-                  </button>
-                </Link>
-              </>
-            )}
-          </div>
-        </nav>
-      </div>
-      {isMenuOpen && isMobileView && (
-        <button
-          className="md:hidden px-4 py-2 bg-blue-500 text-white rounded fixed top-2 right-2"
-          onClick={toggleMenu}
-        >
-          ☰
-        </button>
-      )}
-    </header>
-  );
-};
+    <Navbar shouldHideOnScroll>
+      {/* 브랜드 로고 및 이름 */}
+      <NavbarBrand>
+        <img src="/tslogo.svg" alt="Minboard Logo" />
+        <Link href="/" aria-current="page">
+          <p className="font-bold text-inherit ml-2">Minboard</p>
+        </Link>
+      </NavbarBrand>
 
-export default Header;
+      {/* 중앙 네비게이션 메뉴 */}
+      <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        {auth.isAuthenticated && ( // 로그인한 사용자만 게시판, 프로필 링크 표시
+          <>
+            <NavbarItem>
+              <Link color="foreground" href="/post">
+                Bulletin Board
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link color="foreground" href="/profile">
+                Profile
+              </Link>
+            </NavbarItem>
+          </>
+        )}
+      </NavbarContent>
+
+      {/* 우측 메뉴 (로그인, 회원가입, 테마 전환 스위치) */}
+      <NavbarContent justify="end">
+        <NavbarItem>
+          {/* flex-row로 변경하고 간격 조정 */}
+          <div className="flex flex-row items-center gap-2">
+            <SunIcon
+              className={`w-5 h-5 ${theme === "light" ? "text-yellow-500" : "text-gray-400"}`}
+            />
+            <Switch
+              checked={theme === "dark"}
+              onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
+            />
+            <MoonIcon
+              className={`w-5 h-5 ${theme === "dark" ? "text-blue-500" : "text-gray-400"}`}
+            />
+          </div>
+        </NavbarItem>
+        {auth.isAuthenticated ? (
+          <>
+            {/* 로그아웃 버튼 */}
+            <NavbarItem>
+              <Button
+                color="secondary"
+                variant="flat"
+                onPress={handleLogout}
+              >
+                Logout
+              </Button>
+            </NavbarItem>
+          </>
+        ) : (
+          <>
+            {/* 로그인 및 회원가입 버튼 */}
+            <NavbarItem className="hidden lg:flex">
+              <Link href="/login">Login</Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Button as={Link} color="primary" href="/signup" variant="flat">
+                Sign Up
+              </Button>
+            </NavbarItem>
+          </>
+        )}
+      </NavbarContent>
+    </Navbar>
+  );
+}
