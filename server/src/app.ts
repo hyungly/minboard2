@@ -1,8 +1,8 @@
-// app.ts
 import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
+import cors from 'cors'; // CORS 추가
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import './config/passport'; // 패스포트 설정 파일
@@ -22,6 +22,15 @@ const PORT = config.port; // config에서 포트 가져오기
 
 // 미들웨어 설정
 app.use(express.json());
+
+const corsOptions = {
+  origin: 'http://localhost:3000', // 클라이언트 주소
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // 쿠키를 허용하려면 true로 설정
+};
+
+app.use(cors(corsOptions)); // CORS 설정 추가
+
 app.use(cookieParser(config.cookieSecret)); // config에서 cookieSecret 가져오기
 app.use(passport.initialize());
 
