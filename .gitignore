@@ -29,3 +29,7 @@ server/.env.*
 .vscode/
 .idea/
 .DS_Store
+
+# Next.js specific
+client/.next
+client/next-env.d.ts
