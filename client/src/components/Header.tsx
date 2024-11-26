@@ -18,9 +18,9 @@ export default function Header() {
     <Navbar shouldHideOnScroll>
       {/* 브랜드 로고 및 이름 */}
       <NavbarBrand>
-        <img src="/tslogo.svg" alt="Minboard Logo" />
         <Link href="/" aria-current="page">
-          <p className="font-bold text-inherit ml-2">Minboard</p>
+          <img src="/mblogo.png" alt="Minboard Logo" />
+          <p className="font-bold text-inherit ml-2">MINBOARD</p>
         </Link>
       </NavbarBrand>
 
@@ -30,12 +30,12 @@ export default function Header() {
           <>
             <NavbarItem>
               <Link color="foreground" href="/post">
-                Bulletin Board
+                게시판
               </Link>
             </NavbarItem>
             <NavbarItem>
               <Link color="foreground" href="/profile">
-                Profile
+                회원정보
               </Link>
             </NavbarItem>
           </>
@@ -68,7 +68,7 @@ export default function Header() {
                 variant="flat"
                 onPress={handleLogout}
               >
-                Logout
+                로그아웃
               </Button>
             </NavbarItem>
           </>
@@ -76,11 +76,11 @@ export default function Header() {
           <>
             {/* 로그인 및 회원가입 버튼 */}
             <NavbarItem className="hidden lg:flex">
-              <Link href="/login">Login</Link>
+              <Link href="/login">로그인</Link>
             </NavbarItem>
             <NavbarItem>
-              <Button as={Link} color="primary" href="/signup" variant="flat">
-                Sign Up
+              <Button as={Link} color="primary" href="/register" variant="flat">
+                회원가입
               </Button>
             </NavbarItem>
           </>

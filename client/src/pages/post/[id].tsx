@@ -1,78 +1,69 @@
-import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import { useRouter } from "next/router";
+import React, { useState } from "react";
+import { Card, Input, Textarea, Button, Spacer } from "@nextui-org/react";
 
 const Post = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  // State for edit mode
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState("Sample Title");
   const [content, setContent] = useState("This is a sample post content.");
 
-  // Simulated delete function
   const handleDelete = () => {
     console.log(`Post ${id} deleted!`);
-    // Simulate navigation after deletion
     router.push("/post");
   };
 
-  // Simulated save function
   const handleSave = () => {
     console.log(`Post ${id} updated with title: ${title}, content: ${content}`);
-    setIsEditing(false); // Exit edit mode
+    setIsEditing(false);
   };
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl mb-4">Post {id}</h1>
-      
+    <Card style={{ maxWidth: "800px", margin: "auto", padding: "24px", minHeight: "40vh" }}>
+      <h1 style={{ fontSize: "24px", marginBottom: "16px" }}>Post {id}</h1>
       {isEditing ? (
         <div>
-          <input
-            type="text"
+          <Input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="p-2 border rounded w-full mb-4"
+            placeholder="제목"
+            size="lg"
           />
-          <textarea
+          <Spacer y={1} />
+          <Textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="p-2 border rounded w-full mb-4"
-            rows={5}
+            placeholder="내용"
+            size="lg"
+            rows={12} // 줄 수를 늘려서 입력 창의 길이를 조정
           />
-          <button
-            onClick={handleSave}
-            className="px-4 py-2 bg-green-500 text-white rounded mr-2"
-          >
-            Save
-          </button>
-          <button
-            onClick={() => setIsEditing(false)}
-            className="px-4 py-2 bg-gray-500 text-white rounded"
-          >
-            Cancel
-          </button>
+          <Spacer y={1.5} />
+          <div style={{ display: "flex", gap: "8px" }}>
+            <Button onClick={handleSave} color="success" size="lg">
+              저장
+            </Button>
+            <Button onClick={() => setIsEditing(false)} color="default" size="lg">
+              취소
+            </Button>
+          </div>
         </div>
       ) : (
         <div>
-          <h2 className="text-xl font-bold mb-2">{title}</h2>
-          <p className="mb-4">{content}</p>
-          <button
-            onClick={() => setIsEditing(true)}
-            className="px-4 py-2 bg-blue-500 text-white rounded mr-2"
-          >
-            Edit
-          </button>
-          <button
-            onClick={handleDelete}
-            className="px-4 py-2 bg-red-500 text-white rounded"
-          >
-            Delete
-          </button>
+          <h2 style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "8px" }}>{title}</h2>
+          <p style={{ marginBottom: "16px" }}>{content}</p>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <Button onClick={() => setIsEditing(true)} size="lg">
+              수정
+            </Button>
+            <Button onClick={handleDelete} color="danger" size="lg">
+              삭제
+            </Button>
+          </div>
         </div>
       )}
-    </div>
+    </Card>
   );
 };
 
