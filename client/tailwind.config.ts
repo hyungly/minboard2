@@ -1,12 +1,12 @@
-import type { Config } from 'tailwindcss'
-import { nextui } from '@nextui-org/react'
+import type { Config } from 'tailwindcss';
+import { nextui } from '@nextui-org/react';
 
 const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}'  // 이 줄 추가
+    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}', // 이 줄 추가
   ],
   theme: {
     extend: {
@@ -16,8 +16,8 @@ const config: Config = {
       },
     },
   },
-  darkMode: "class",
-  plugins: [nextui()]
-}
+  darkMode: 'class',
+  plugins: [nextui(require('@tailwindcss/line-clamp'))],
+};
 
-export default config
+export default config;

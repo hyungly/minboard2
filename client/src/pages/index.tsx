@@ -7,25 +7,31 @@ import 'slick-carousel/slick/slick-theme.css';
 interface CardItemProps {
   title: string;
   content: string;
+  isFirstCard?: boolean;
 }
 
-const CardItem: React.FC<CardItemProps> = ({ title, content }) => (
+const CardItem: React.FC<CardItemProps> = ({ title, content, isFirstCard = false }) => (
   <div className="flex justify-center">
     <Card 
-      className="p-6 w-80 h-120 flex-shrink-0 bg-white dark:bg-gray-800 dark:text-gray-100 
-                 shadow-xl dark:shadow-xl dark:shadow-gray-700"
+      className="p-6 w-80 h-auto flex-shrink-0 mx-4 bg-white dark:bg-gray-800 dark:text-gray-100 shadow-lg dark:shadow-lg dark:shadow-gray-700"
     >
-      <h1 className="text-2xl font-semibold mb-4 text-center">{title}</h1>
+      <h1 className="text-xl font-semibold mb-4 text-center"> <span dangerouslySetInnerHTML={{ __html: title }} /></h1>
       <p className="text-md mb-6 text-justify">{content}</p>
-      <Divider />
-      <div className="flex flex-col items-center mt-4">
-        <p className="text-sm mb-6 text-justify">
-          로그인 후에 다양한 소식들을 자유롭게 공유해보세요.
-        </p>
-        <Link href="/login">
-          <Button className="dark:bg-gray-700 dark:text-gray-100">로그인</Button>
-        </Link>
-      </div>
+      
+      {/* 첫 번째 카드에만 추가 영역 표시 */}
+      {isFirstCard && (
+        <>
+          <Divider />
+          <div className="flex flex-col items-center mt-4">
+            <p className="text-sm mb-6 text-center">
+              로그인 후 다양한 소식들을 자유롭게 공유해보세요.
+            </p>
+            <Link href="/login">
+              <Button>로그인</Button>
+            </Link>
+          </div>
+        </>
+      )}
     </Card>
   </div>
 );
@@ -37,42 +43,44 @@ const Home = () => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    // arrows: true,
-    centerMode: true,
-    centerPadding: '0px',
-    swipe: true,
-    // customPaging: (i: number) => (
-    //   <div 
-    //     className="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600 
-    //                mt-4 mx-1 cursor-pointer transition-colors 
-    //                hover:bg-gray-500 dark:hover:bg-gray-400"
-    //   />
-    // ),
-    dotsClass: "slick-dots !relative !flex !justify-center !p-0 !m-4",
-    nextArrow: <div />,
-    prevArrow: <div />,
+    arrows: true, centerMode: true, centerPadding: '0',
+    swipe: true, // 터치 슬라이딩 기능
   };
 
   const items = [
     {
-      title: 'Minboard에 오신 것을 환영합니다!',
+      title: 'Minboard에 오신 것을<br /> 환영합니다!',
       content: 'Minboard는 새롭게 시작하는 소식 공유 게시판 서비스입니다. 꾸준히 새로운 기능들을 개발 중에 있으며, 앞으로 더욱 다양한 서비스를 제공할 예정입니다. 많은 관심과 참여 부탁드립니다!',
     },
-    ...Array(4).fill(0).map((_, index) => ({
-      title: `Dummy Card ${index + 1}`,
-      content: `Dummy content for card ${index + 1}. More exciting features and updates coming soon!`,
-    })),
+    {
+      title: '개발 끝',
+      content: '목 허리도 끝',
+    },
+    {
+      title: '일단은 이렇게 만들었는데',
+      content: '무슨 기능을 추가하면 좋을까요? 게시판에 적어주세요',
+    },
+    {
+      title: '코딩은 즐겁다',
+      content: '근데 꼭 그렇지만도 않다.',
+    },
+    {
+      title: '헬스는 항상 즐겁다',
+      content: '헬스하세요.',
+    },
+    
   ];
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <div className="w-[350px]"> {/* Adjusted width to center the card */}
-        <Slider {...settings}>
+      <div>
+        <Slider {...settings} className="w-full max-w-md">
           {items && items.length > 0 && items.map((item, index) => (
-            <CardItem 
+            <CardItem
               key={index}
               title={item.title}
               content={item.content}
+              isFirstCard={index === 0}
             />
           ))}
         </Slider>

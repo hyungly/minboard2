@@ -18,3 +18,49 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
+
+/* Dark Mode Shadow Utilities */
+.dark-shadow-sm {
+  @apply shadow-sm dark:shadow-sm dark:shadow-gray-800/40;
+}
+
+.dark-shadow-md {
+  @apply shadow-md dark:shadow-md dark:shadow-gray-800/50;
+}
+
+.dark-shadow-lg {
+  @apply shadow-lg dark:shadow-lg dark:shadow-gray-800/60;
+}
+
+.dark-shadow-xl {
+  @apply shadow-xl dark:shadow-xl dark:shadow-gray-800/60;
+}
+
+/* Optional: Additional dark mode elevation classes */
+.dark-elevation-1 {
+  @apply dark:bg-default-100/50 dark:shadow-md dark:shadow-gray-800/30;
+}
+
+.dark-elevation-2 {
+  @apply dark:bg-default-100/60 dark:shadow-lg dark:shadow-gray-800/40;
+}
+
+/* Dark Mode Hover Effects */
+.dark-hover {
+  @apply hover:bg-default-100 
+         dark:hover:bg-default-200/50 
+         transition-all 
+         duration-300 
+         ease-in-out;
+}
+
+.dark-pressable-card {
+  @apply hover:shadow-lg 
+         dark:hover:shadow-lg 
+         dark:hover:shadow-gray-800/50 
+         transition-all 
+         duration-300 
+         ease-in-out
+         hover:scale-[1.02] 
+         dark:hover:scale-[1.02];
+}

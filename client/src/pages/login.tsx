@@ -1,6 +1,8 @@
 // client/src/pages/login.tsx
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import { useRecoilState } from 'recoil';
+import { authState } from '@/stores/atoms';
 import axiosInstance from '@/utils/axiosInstance'; // axiosInstance를 import
 import {
   Button,
@@ -26,6 +28,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [auth, setAuth] = useRecoilState(authState); // Recoil 상태 사용
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -41,6 +44,7 @@ const Login = () => {
       });
       if (response.status === 200) {
         alert(`로그인 성공: ${response.data.user.username}`);
+        setAuth({ isAuthenticated: true, user: response.data.user }); // 로그인 성공 시 Recoil 상태 업데이트
         router.push('/home');
       }
     } catch (err) {

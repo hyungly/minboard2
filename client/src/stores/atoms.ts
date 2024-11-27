@@ -1,10 +1,18 @@
-import { atom } from "recoil";
+import { atom } from 'recoil';
 
-const uniqueKey = `authState${Math.random().toString(36).substring(2)}`;
+interface AuthState {
+  isAuthenticated: boolean;
+  user: User | null;
+}
 
-export const authState = atom({
-  key: uniqueKey,
+interface User {
+  username: string;
+}
+
+export const authState = atom<AuthState>({
+  key: 'authState',
   default: {
     isAuthenticated: false,
+    user: null,
   },
 });
