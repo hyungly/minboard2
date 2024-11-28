@@ -1,31 +1,45 @@
-# default
+# Node modules
 node_modules/
-.env
+client/node_modules/
+server/node_modules/
 
 # Logs
 logs/
 *.log
 npm-debug.log*
 
-# Build
+# Build outputs
 dist/
 build/
-
-# Dependency directories
-client/node_modules/
-server/node_modules/
+client/dist/
+server/dist/
+client/build/
+server/build/
 
 # Environment variables
+.env
+.env.*
 client/.env
-client/.env.dev
-client/.env.prod
 client/.env.*
 server/.env
-server/.env.dev
-server/.env.prod
 server/.env.*
 
-# IDE/Editor specific
+# IDEs and editors
 .vscode/
 .idea/
 .DS_Store
+
+# Next.js specific
+.next/
+client/.next/
+server/.next/
+out/
+client/out/
+server/out/
+
+# TypeScript
+*.tsbuildinfo
+client/next-env.d.ts
+
+# Jest
+coverage/
