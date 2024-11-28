@@ -1,3 +1,4 @@
+// authRoutes.ts
 import { Router } from 'express';
 import {
   login,
@@ -5,6 +6,8 @@ import {
   googleCallback,
   handleSendVerificationCode,
   handleVerifyCode,
+  handleForgotPassword,
+  handleResetPassword,
 } from '../controllers/authController';
 import passport from 'passport';
 
@@ -25,5 +28,9 @@ router.get(
 // 이메일 인증 관련 라우트 추가
 router.post('/send-verification-code', handleSendVerificationCode);
 router.post('/verify-code', handleVerifyCode);
+
+// 비밀번호 재설정 관련 라우트 추가
+router.post('/forgot-password', handleForgotPassword);
+router.post('/reset-password', handleResetPassword);
 
 export default router;

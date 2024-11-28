@@ -4,6 +4,8 @@ import {
   loginUser,
   sendVerificationCode,
   verifyCode,
+  handleForgotPasswordRequest,
+  handlePasswordReset,
 } from '../services/authService';
 import { CreateUserDTO, LoginUserDTO } from '../DTOs/userDTO';
 import { handleGoogleCallback } from '../services/authService';
@@ -21,6 +23,7 @@ export const register = async (
     res.status(201).json(newUser);
   } catch (error) {
     console.error('Error during user registration:', error);
+    res.status(400).json({ message: 'User registration failed.' });
     next(error);
   }
 };
@@ -37,6 +40,7 @@ export const login = async (
     res.json({ token });
   } catch (error) {
     console.error('Error during user login:', error);
+    res.status(401).json({ message: 'Invalid credentials.' });
     next(error);
   }
 };
@@ -53,7 +57,8 @@ export const googleCallback = (
     res.json({ token });
   } catch (error) {
     console.error('Google authentication failed:', error);
-    next(new Error('Google authentication failed.'));
+    res.status(500).json({ message: 'Google authentication failed.' });
+    next(error);
   }
 };
 
@@ -66,26 +71,55 @@ export const handleSendVerificationCode = async (
 
   try {
     const verificationCode = await sendVerificationCode(email);
-    res.status(200).json({ code: verificationCode });
+    res.status(200).json({
+      message: 'Verification code sent successfully.',
+      code: verificationCode,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Failed to send email' });
+    console.error('Failed to send email:', error);
+    res.status(500).json({ message: 'Failed to send email.' });
   }
 };
 
 // 인증번호 확인
 export const handleVerifyCode = (req: Request, res: Response) => {
-  const { email, inputCode } = req.body;
+  const { email, verificationCode } = req.body;
 
   try {
-    const isValid = verifyCode(email, inputCode);
+    const isValid = verifyCode(email, verificationCode);
     if (isValid) {
-      res.status(200).json({ message: 'Verification successful' });
+      res.status(200).json({ message: 'Verification successful.' });
     } else {
-      res.status(400).json({ message: 'Verification failed' });
+      res.status(400).json({ message: 'Invalid verification code.' });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Verification process failed' });
+    console.error('Verification process failed:', error);
+    res.status(500).json({ message: 'Verification process failed.' });
+  }
+};
+
+// 비밀번호 재설정 요청
+export const handleForgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  try {
+    await handleForgotPasswordRequest(email);
+    res.status(200).json({ message: 'Password reset link sent.' });
+  } catch (error) {
+    console.error('Failed to send password reset link:', error);
+    res.status(500).json({ message: 'Failed to send password reset link.' });
+  }
+};
+
+// 비밀번호 재설정
+export const handleResetPassword = async (req: Request, res: Response) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    await handlePasswordReset(token, newPassword);
+    res.status(200).json({ message: 'Password reset successful.' });
+  } catch (error) {
+    console.error('Failed to reset password:', error);
+    res.status(500).json({ message: 'Failed to reset password.' });
   }
 };

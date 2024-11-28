@@ -2,7 +2,11 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import { config } from '../config';
-import { findUserByEmail, createUser } from '../models/authModel';
+import {
+  findUserByEmail,
+  createUser,
+  updateUserPassword,
+} from '../models/authModel';
 import { CreateUserDTO, LoginUserDTO, UserResponseDTO } from '../DTOs/userDTO';
 import { User } from '@prisma/client';
 
@@ -66,13 +70,13 @@ export const sendVerificationCode = async (email: string) => {
   const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: process.env.NODEMAILER_USER,
+      pass: process.env.NODEMAILER_PASS,
     },
   });
 
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: `"민보드 Minboard" <${process.env.NODEMAILER_USER}>`,
     to: email,
     subject: 'Your Verification Code',
     text: `Your verification code is ${verificationCode}`,
@@ -96,3 +100,54 @@ export const verifyCode = (email: string, inputCode: string) => {
 
 // 메모리 상의 인증번호 저장소
 const verificationCodes = new Map<string, string>();
+
+// 비밀번호 재설정 요청
+export const handleForgotPasswordRequest = async (email: string) => {
+  const user = await findUserByEmail(email);
+  if (!user) {
+    throw new Error('User not found.');
+  }
+
+  const resetToken = jwt.sign({ userId: user.id }, config.jwtSecret, {
+    expiresIn: '1h',
+  });
+
+  const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: process.env.NODEMAILER_USER,
+      pass: process.env.NODEMAILER_PASS,
+    },
+  });
+
+  const mailOptions = {
+    from: `"민보드 Minboard" <${process.env.NODEMAILER_USER}>`,
+    to: email,
+    subject: 'Password Reset Request',
+    text: `To reset your password, please use the following token: ${resetToken}`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to send email');
+  }
+};
+
+// 비밀번호 재설정
+export const handlePasswordReset = async (
+  token: string,
+  newPassword: string
+) => {
+  let payload;
+  try {
+    payload = jwt.verify(token, config.jwtSecret) as { userId: string };
+  } catch (error) {
+    console.error('Error verifying token:', error); // 에러를 로그로 출력
+    throw new Error('Invalid or expired token.');
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  await updateUserPassword(payload.userId, hashedPassword);
+};

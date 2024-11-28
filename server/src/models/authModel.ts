@@ -16,3 +16,14 @@ export const createUser = async (userData: {
 }) => {
   return prisma.user.create({ data: userData });
 };
+
+// 사용자 비밀번호 업데이트
+export const updateUserPassword = async (
+  userId: number,
+  newPassword: string
+) => {
+  await prisma.user.update({
+    where: { id: userId },
+    data: { password: newPassword },
+  });
+};
