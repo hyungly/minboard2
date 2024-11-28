@@ -10,8 +10,7 @@ import {
   Chip 
 } from "@nextui-org/react";
 import Link from "next/link";
-import { Search, PenLine, MessageCircle } from 'lucide-react';
-
+import { Search, PenLine, MessageCircle, MessagesSquare } from 'lucide-react';
 interface Post {
   id: number;
   title: string;
@@ -90,7 +89,7 @@ const PostList: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-default-800">Community Board</h1>
+        <h1 className="text-3xl font-bold text-default-800"><MessagesSquare className="mb-2" />게시판</h1>
         <Link href="/post/create">
           <Button 
             color="primary" 

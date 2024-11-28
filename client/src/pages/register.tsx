@@ -12,7 +12,11 @@ import {
   Checkbox,
   Tooltip,
 } from "@nextui-org/react";
-import { EnvelopeIcon, LockClosedIcon, UserIcon } from "@heroicons/react/24/outline";
+import {
+  Mail as MailIcon,
+  Lock as LockIcon,
+  User as UserIcon,
+} from "lucide-react";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -116,7 +120,7 @@ const handleRegister = async (): Promise<void> => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            startContent={<EnvelopeIcon className="w-4 h-4 text-default-400" />}
+            startContent={<MailIcon className="w-4 h-4 text-default-400" />}
             endContent={
               <Button
                 variant="light"
@@ -151,7 +155,7 @@ const handleRegister = async (): Promise<void> => {
             placeholder="비밀번호를 입력하세요"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            startContent={<LockClosedIcon className="w-4 h-4 text-default-400" />}
+            startContent={<LockIcon className="w-4 h-4 text-default-400" />}
             endContent={
               <Button
                 variant="light"
@@ -170,7 +174,7 @@ const handleRegister = async (): Promise<void> => {
             placeholder="비밀번호를 다시 입력하세요"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            startContent={<LockClosedIcon className="w-4 h-4 text-default-400" />}
+            startContent={<LockIcon className="w-4 h-4 text-default-400" />}
             type={isVisible ? "text" : "password"}
             color={error && confirmPassword !== password ? "danger" : "default"}
           />

@@ -1,9 +1,8 @@
-// client/src/pages/login.tsx
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useRecoilState } from 'recoil';
 import { authState } from '@/stores/atoms';
-import axiosInstance from '@/utils/axiosInstance'; // axiosInstance를 import
+import axiosInstance from '@/utils/axiosInstance';
 import {
   Button,
   Card,
@@ -16,10 +15,10 @@ import {
   Tooltip,
 } from '@nextui-org/react';
 import {
-  EnvelopeIcon,
-  LockClosedIcon,
-  HomeIcon,
-} from '@heroicons/react/24/outline';
+  Mail as MailIcon,
+  Lock as LockIcon,
+  Home as HomeIcon,
+} from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
 
 const Login = () => {
@@ -28,7 +27,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [auth, setAuth] = useRecoilState(authState); // Recoil 상태 사용
+  const [auth, setAuth] = useRecoilState(authState);
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -44,7 +43,7 @@ const Login = () => {
       });
       if (response.status === 200) {
         alert(`로그인 성공: ${response.data.user.username}`);
-        setAuth({ isAuthenticated: true, user: response.data.user }); // 로그인 성공 시 Recoil 상태 업데이트
+        setAuth({ isAuthenticated: true, user: response.data.user });
         router.push('/home');
       }
     } catch (err) {
@@ -74,7 +73,7 @@ const Login = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            startContent={<EnvelopeIcon className="w-4 h-4 text-default-400" />}
+            startContent={<MailIcon className="w-4 h-4 text-default-400" />}
             color={error && !email ? 'danger' : 'default'}
           />
 
@@ -83,9 +82,7 @@ const Login = () => {
             placeholder="비밀번호를 입력하세요"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            startContent={
-              <LockClosedIcon className="w-4 h-4 text-default-400" />
-            }
+            startContent={<LockIcon className="w-4 h-4 text-default-400" />}
             endContent={
               <Button variant="light" isIconOnly onClick={toggleVisibility}>
                 {isVisible ? '👁️' : '👁️‍🗨️'}

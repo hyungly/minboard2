@@ -1,91 +1,112 @@
+import { 
+  Navbar, 
+  NavbarBrand, 
+  NavbarContent, 
+  NavbarItem, 
+  Link, 
+  Button, 
+  NavbarMenuToggle,
+  NavbarMenu,
+  NavbarMenuItem
+} from "@nextui-org/react";
+import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { authState } from "@/stores/atoms";
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Switch } from "@nextui-org/react";
-import { SunIcon, MoonIcon } from "@heroicons/react/24/outline";
-import { useTheme as useNextTheme } from "next-themes";
-// import { AcmeLogo } from "@/AcmeLogo";
 
 export default function Header() {
-  const { theme, setTheme } = useNextTheme();
-  const [auth, setAuth] = useRecoilState(authState); // 로그인 상태
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [auth, setAuth] = useRecoilState(authState);
 
   const handleLogout = () => {
-    setAuth({ isAuthenticated: false, user: null }); // 로그아웃 처리
-    // 추가적으로 로그아웃 API 호출이 필요할 수 있음
+    setAuth({ isAuthenticated: false, user: null });
   };
 
+  const menuItems = [
+    { label: "게시판", href: "/post" },
+    ...(auth.isAuthenticated ? [{ label: "회원정보", href: "/profile" }] : [])
+  ];
+
   return (
-    <Navbar shouldHideOnScroll>
-      {/* 브랜드 로고 및 이름 */}
+    <Navbar 
+      isBordered 
+      isMenuOpen={isMenuOpen} 
+      onMenuOpenChange={setIsMenuOpen}
+      shouldHideOnScroll
+      classNames={{
+        menu: "top-[calc(56px)] h-[calc(50vh)] max-h-[200px] rounded-b-xl shadow-xl overflow-hidden",
+        menuItem: "py-3 px-4"
+      }}
+    >
+      <NavbarContent className="sm:hidden" justify="start">
+        <NavbarMenuToggle 
+          aria-label={isMenuOpen ? "닫기" : "메뉴 열기"}
+          onChange={() => setIsMenuOpen(!isMenuOpen)}
+        />
+      </NavbarContent>
+
       <NavbarBrand>
-        <Link href="/" aria-current="page">
-          <img src="/mblogo.png" alt="Minboard Logo" />
-          <p className="font-bold text-inherit ml-2">MINBOARD</p>
+        <Link href="/" aria-current="page" className="flex items-center">
+          <img src="/mblogo.png" alt="Minboard Logo" className="h-8 mr-2" />
+          <p className="font-bold text-inherit">MINBOARD</p>
         </Link>
       </NavbarBrand>
 
-      {/* 중앙 네비게이션 메뉴 */}
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        {auth.isAuthenticated && ( // 로그인한 사용자만 게시판, 프로필 링크 표시
-          <>
-            <NavbarItem>
-              <Link color="foreground" href="/post">
-                게시판
+        {menuItems
+          .filter(item => item.href !== "/profile" || auth.isAuthenticated)
+          .map((item) => (
+            <NavbarItem key={item.href}>
+              <Link color="foreground" href={item.href}>
+                {item.label}
               </Link>
             </NavbarItem>
-            <NavbarItem>
-              <Link color="foreground" href="/profile">
-                회원정보
-              </Link>
-            </NavbarItem>
-          </>
-        )}
+          ))}
       </NavbarContent>
 
-      {/* 우측 메뉴 (로그인, 회원가입, 테마 전환 스위치) */}
       <NavbarContent justify="end">
-        <NavbarItem>
-          {/* flex-row로 변경하고 간격 조정 */}
-          <div className="flex flex-row items-center gap-2">
-            <SunIcon
-              className={`w-5 h-5 ${theme === "light" ? "text-yellow-500" : "text-gray-400"}`}
-            />
-            <Switch
-              checked={theme === "dark"}
-              onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
-            />
-            <MoonIcon
-              className={`w-5 h-5 ${theme === "dark" ? "text-blue-500" : "text-gray-400"}`}
-            />
-          </div>
-        </NavbarItem>
         {auth.isAuthenticated ? (
-          <>
-            {/* 로그아웃 버튼 */}
-            <NavbarItem>
-              <Button
-                color="secondary"
-                variant="flat"
-                onPress={handleLogout}
-              >
-                로그아웃
-              </Button>
-            </NavbarItem>
-          </>
+          <NavbarItem>
+            <Button
+              color="secondary"
+              variant="flat"
+              onPress={handleLogout}
+            >
+              로그아웃
+            </Button>
+          </NavbarItem>
         ) : (
           <>
-            {/* 로그인 및 회원가입 버튼 */}
             <NavbarItem className="hidden lg:flex">
               <Link href="/login">로그인</Link>
             </NavbarItem>
             <NavbarItem>
-              <Button as={Link} color="primary" href="/register" variant="flat">
+              <Button 
+                as={Link} 
+                color="primary" 
+                href="/register" 
+                variant="flat"
+              >
                 회원가입
               </Button>
             </NavbarItem>
           </>
         )}
       </NavbarContent>
+
+      <NavbarMenu>
+        {menuItems.map((item, index) => (
+          <NavbarMenuItem key={`${item.href}-${index}`}>
+            <Link
+              color="foreground"
+              className="w-full"
+              href={item.href}
+              size="lg"
+            >
+              {item.label}
+            </Link>
+          </NavbarMenuItem>
+        ))}
+      </NavbarMenu>
     </Navbar>
   );
 }

@@ -50,7 +50,7 @@ const Home = () => {
   const items = [
     {
       title: 'Minboard에 오신 것을<br /> 환영합니다!',
-      content: 'Minboard는 새롭게 시작하는 소식 공유 게시판 서비스입니다. 꾸준히 새로운 기능들을 개발 중에 있으며, 앞으로 더욱 다양한 서비스를 제공할 예정입니다. 많은 관심과 참여 부탁드립니다!',
+      content: 'Minboard는 웹 앱 서비스입니다. 꾸준히 새로운 기능들을 개발 중에 있으며, 앞으로 더욱 다양한 서비스를 제공할 예정입니다. 많은 관심과 참여 부탁드립니다!',
     },
     {
       title: '개발 끝',
@@ -72,9 +72,10 @@ const Home = () => {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
+    <div className="flex flex-col items-center justify-center min-h-screen overflow-hidden">
+       <img src="/itiswhatitis.png" className='rounded-b-xl'/>
       <div>
-        <Slider {...settings} className="w-full max-w-md">
+        <Slider {...settings} className="w-full  mt-4 max-w-md">
           {items && items.length > 0 && items.map((item, index) => (
             <CardItem
               key={index}
