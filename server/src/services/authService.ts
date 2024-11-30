@@ -9,6 +9,7 @@ import {
 } from '../models/authModel';
 import { CreateUserDTO, LoginUserDTO, UserResponseDTO } from '../DTOs/userDTO';
 import { User } from '@prisma/client';
+import redis from '../utils/redisClient';
 
 // 사용자 등록
 export const registerUser = async (
@@ -62,10 +63,11 @@ export const handleGoogleCallback = (user: User): string => {
 };
 
 // 인증번호 발송
+//redis 활용
 export const sendVerificationCode = async (email: string) => {
   const verificationCode = Math.floor(
     100000 + Math.random() * 900000
-  ).toString();
+  ).toString(); // 6자리 인증번호 생성
 
   const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -84,22 +86,23 @@ export const sendVerificationCode = async (email: string) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    verificationCodes.set(email, verificationCode); // 인증번호 메모리에 저장
+    await redis.set(email, verificationCode, 'EX', 300); // Redis에 인증번호 저장 (300초 유효)
+    console.log(`Verification code for ${email}: ${verificationCode}`);
     return verificationCode;
   } catch (error) {
-    console.error(error);
-    throw new Error('Failed to send email');
+    console.error('Error sending email:', error);
+    throw new Error('Failed to send email.');
   }
 };
 
-// 인증번호 확인
-export const verifyCode = (email: string, inputCode: string) => {
-  const actualCode = verificationCodes.get(email); // 저장된 인증번호 가져오기
-  return inputCode === actualCode;
+export const verifyCode = async (email: string, inputCode: string) => {
+  const storedCode = await redis.get(email);
+  if (storedCode && storedCode === inputCode) {
+    await redis.del(email); // 인증 완료 후 코드 삭제
+    return true;
+  }
+  return false;
 };
-
-// 메모리 상의 인증번호 저장소
-const verificationCodes = new Map<string, string>();
 
 // 비밀번호 재설정 요청
 export const handleForgotPasswordRequest = async (email: string) => {
@@ -150,4 +153,16 @@ export const handlePasswordReset = async (
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);
   await updateUserPassword(payload.userId, hashedPassword);
+};
+
+const blacklistedTokens = new Set<string>();
+
+// 로그아웃 시 토큰 블랙리스트 추가
+export const blacklistToken = (token: string) => {
+  blacklistedTokens.add(token);
+};
+
+// 블랙리스트 검증
+export const isTokenBlacklisted = (token: string): boolean => {
+  return blacklistedTokens.has(token);
 };

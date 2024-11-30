@@ -13,7 +13,7 @@ import { errorHandler } from './middlewares/errorHandler'; // 에러 핸들링 �
 import userRoutes from './routes/userRoutes';
 import postRoutes from './routes/postRoutes';
 import commentRoutes from './routes/commentRoutes';
-import profileRoutes from './routes/profileRoutes';
+// import profileRoutes from './routes/profileRoutes';
 import authRoutes from './routes/authRoutes';
 
 // Express 애플리케이션 초기화
@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
-app.use('/api/profile', profileRoutes);
+// app.use('/api/profile', profileRoutes);
 app.use('/api/auth', authRoutes);
 
 // 에러 핸들링 미들웨어

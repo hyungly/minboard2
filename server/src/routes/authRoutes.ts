@@ -3,11 +3,12 @@ import { Router } from 'express';
 import {
   login,
   register,
-  googleCallback,
+  // logout,
   handleSendVerificationCode,
   handleVerifyCode,
   handleForgotPassword,
   handleResetPassword,
+  googleCallback,
 } from '../controllers/authController';
 import passport from 'passport';
 
@@ -15,6 +16,14 @@ const router = Router();
 
 router.post('/login', login);
 router.post('/register', register);
+// router.post('/logout', logout);
+
+router.post('/email/send-verification-code', handleSendVerificationCode);
+router.post('/email/verify-code', handleVerifyCode);
+
+router.post('/password/forgot', handleForgotPassword);
+router.post('/password/reset', handleResetPassword);
+
 router.get(
   '/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
@@ -24,13 +33,5 @@ router.get(
   passport.authenticate('google', { failureRedirect: '/' }),
   googleCallback
 );
-
-// 이메일 인증 관련 라우트 추가
-router.post('/send-verification-code', handleSendVerificationCode);
-router.post('/verify-code', handleVerifyCode);
-
-// 비밀번호 재설정 관련 라우트 추가
-router.post('/forgot-password', handleForgotPassword);
-router.post('/reset-password', handleResetPassword);
 
 export default router;

@@ -45,6 +45,17 @@ export const login = async (
   }
 };
 
+// 사용자 로그아웃
+export const logout = (req: Request, res: Response) => {
+  try {
+    res.clearCookie('token'); // 쿠키에서 토큰 삭제
+    res.status(200).json({ message: 'Logged out successfully.' });
+  } catch (error) {
+    console.error('Logout failed:', error);
+    res.status(500).json({ message: 'Logout failed.' });
+  }
+};
+
 // Google 콜백
 export const googleCallback = (
   req: Request,
