@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { useRecoilState } from 'recoil';
-import { authState } from '@/stores/atoms';
-import axiosInstance from '@/utils/axiosInstance';
+import React, { useState } from "react";
+import { useRouter } from "next/router";
+import { useRecoilState } from "recoil";
+import { authState } from "@/stores/atoms/authAtom";
+import axiosInstance from "@/utils/axiosInstance";
 import {
   Button,
   Card,
@@ -13,18 +13,14 @@ import {
   Divider,
   Checkbox,
   Tooltip,
-} from '@nextui-org/react';
-import {
-  Mail as MailIcon,
-  Lock as LockIcon,
-  Home as HomeIcon,
-} from 'lucide-react';
-import { FcGoogle } from 'react-icons/fc';
+} from "@nextui-org/react";
+import { Mail as MailIcon, Lock as LockIcon, Home as HomeIcon } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [auth, setAuth] = useRecoilState(authState);
@@ -32,22 +28,22 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      setError('이메일과 비밀번호를 입력해주세요.');
+      setError("이메일과 비밀번호를 입력해주세요.");
       return;
     }
 
     try {
-      const response = await axiosInstance.post('/api/auth/login', {
+      const response = await axiosInstance.post("/api/auth/login", {
         email,
         password,
       });
       if (response.status === 200) {
         alert(`로그인 성공: ${response.data.user.username}`);
         setAuth({ isAuthenticated: true, user: response.data.user });
-        router.push('/home');
+        router.push("/home");
       }
     } catch (err) {
-      setError('로그인 실패. 정보를 다시 확인해주세요.');
+      setError("로그인 실패. 정보를 다시 확인해주세요.");
     }
   };
 
@@ -59,7 +55,7 @@ const Login = () => {
         <CardHeader className="flex flex-col gap-1 text-center">
           <h1 className="text-2xl font-bold">로그인</h1>
           <p className="text-sm text-default-500">
-            계정이 없으신가요?{' '}
+            계정이 없으신가요?{" "}
             <Link href="/register" className="text-primary">
               회원가입
             </Link>
@@ -74,7 +70,7 @@ const Login = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             startContent={<MailIcon className="w-4 h-4 text-default-400" />}
-            color={error && !email ? 'danger' : 'default'}
+            color={error && !email ? "danger" : "default"}
           />
 
           <Input
@@ -85,11 +81,11 @@ const Login = () => {
             startContent={<LockIcon className="w-4 h-4 text-default-400" />}
             endContent={
               <Button variant="light" isIconOnly onClick={toggleVisibility}>
-                {isVisible ? '👁️' : '👁️‍🗨️'}
+                {isVisible ? "👁️" : "👁️‍🗨️"}
               </Button>
             }
-            type={isVisible ? 'text' : 'password'}
-            color={error && !password ? 'danger' : 'default'}
+            type={isVisible ? "text" : "password"}
+            color={error && !password ? "danger" : "default"}
           />
 
           {error && <p className="text-danger text-sm">{error}</p>}
@@ -120,7 +116,7 @@ const Login = () => {
             variant="bordered"
             startContent={<FcGoogle className="w-5 h-5" />}
             onPress={() =>
-              (window.location.href = 'http://localhost:5000/api/auth/google')
+              (window.location.href = "http://localhost:5000/api/auth/google")
             }
             className="w-full"
           >

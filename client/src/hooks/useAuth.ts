@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { authState } from "@/stores/atoms";
-import axios from "axios";
+import { authState } from "@/stores/atoms/authAtom";
+import axiosInstance from "@/utils/axiosInstance";
 
 export const useAuth = () => {
   const [auth, setAuth] = useRecoilState(authState);
@@ -9,7 +9,7 @@ export const useAuth = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get("/api/users/me"); // 서버의 인증된 사용자 정보 가져오기
+        const response = await axiosInstance.get("/auth/me");
         setAuth({ isAuthenticated: true, user: response.data });
       } catch (err) {
         setAuth({ isAuthenticated: false, user: null });
@@ -19,5 +19,23 @@ export const useAuth = () => {
     fetchUser();
   }, [setAuth]);
 
-  return auth;
+  const login = async (credentials: { email: string; password: string }) => {
+    try {
+      const response = await axiosInstance.post("/auth/login", credentials);
+      setAuth({ isAuthenticated: true, user: response.data });
+    } catch (err) {
+      console.error("Login failed", err);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await axiosInstance.post("/auth/logout");
+      setAuth({ isAuthenticated: false, user: null });
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
+
+  return { ...auth, login, logout };
 };

@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+import { atom } from "recoil";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -6,11 +6,16 @@ interface AuthState {
 }
 
 interface User {
+  id: number;
   username: string;
+  email: string;
+  nickname?: string;
+  profileImage?: string;
+  role: string;
 }
 
 export const authState = atom<AuthState>({
-  key: 'authState',
+  key: "authState",
   default: {
     isAuthenticated: false,
     user: null,

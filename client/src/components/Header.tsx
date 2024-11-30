@@ -1,44 +1,40 @@
-import { 
-  Navbar, 
-  NavbarBrand, 
-  NavbarContent, 
-  NavbarItem, 
-  Link, 
-  Button, 
-  NavbarMenuToggle,
-  NavbarMenu,
-  NavbarMenuItem
-} from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, NavbarMenuToggle, NavbarMenu, NavbarMenuItem } from "@nextui-org/react";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
-import { authState } from "@/stores/atoms";
+import { authState } from "@/stores/atoms/authAtom";
+import axiosInstance from "@/utils/axiosInstance";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [auth, setAuth] = useRecoilState(authState);
 
-  const handleLogout = () => {
-    setAuth({ isAuthenticated: false, user: null });
+  const handleLogout = async () => {
+    try {
+      await axiosInstance.post("/api/auth/logout");
+      setAuth({ isAuthenticated: false, user: null });
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
   };
 
   const menuItems = [
     { label: "게시판", href: "/post" },
-    ...(auth.isAuthenticated ? [{ label: "회원정보", href: "/profile" }] : [])
+    ...(auth.isAuthenticated ? [{ label: "회원정보", href: "/profile" }] : []),
   ];
 
   return (
-    <Navbar 
-      isBordered 
-      isMenuOpen={isMenuOpen} 
+    <Navbar
+      isBordered
+      isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
       shouldHideOnScroll
       classNames={{
         menu: "top-[calc(56px)] h-[calc(50vh)] max-h-[200px] rounded-b-xl shadow-xl overflow-hidden",
-        menuItem: "py-3 px-4"
+        menuItem: "py-3 px-4",
       }}
     >
       <NavbarContent className="sm:hidden" justify="start">
-        <NavbarMenuToggle 
+        <NavbarMenuToggle
           aria-label={isMenuOpen ? "닫기" : "메뉴 열기"}
           onChange={() => setIsMenuOpen(!isMenuOpen)}
         />
@@ -52,25 +48,19 @@ export default function Header() {
       </NavbarBrand>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        {menuItems
-          .filter(item => item.href !== "/profile" || auth.isAuthenticated)
-          .map((item) => (
-            <NavbarItem key={item.href}>
-              <Link color="foreground" href={item.href}>
-                {item.label}
-              </Link>
-            </NavbarItem>
-          ))}
+        {menuItems.map((item) => (
+          <NavbarItem key={item.href}>
+            <Link color="foreground" href={item.href}>
+              {item.label}
+            </Link>
+          </NavbarItem>
+        ))}
       </NavbarContent>
 
       <NavbarContent justify="end">
         {auth.isAuthenticated ? (
           <NavbarItem>
-            <Button
-              color="secondary"
-              variant="flat"
-              onPress={handleLogout}
-            >
+            <Button color="secondary" variant="flat" onPress={handleLogout}>
               로그아웃
             </Button>
           </NavbarItem>
@@ -80,12 +70,7 @@ export default function Header() {
               <Link href="/login">로그인</Link>
             </NavbarItem>
             <NavbarItem>
-              <Button 
-                as={Link} 
-                color="primary" 
-                href="/register" 
-                variant="flat"
-              >
+              <Button as={Link} color="primary" href="/register" variant="flat">
                 회원가입
               </Button>
             </NavbarItem>

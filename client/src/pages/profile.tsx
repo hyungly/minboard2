@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useRecoilState } from 'recoil';
-import { authState } from '@/stores/atoms';
+import { authState } from '@/stores/atoms/authAtom';
 import axiosInstance from '@/utils/axiosInstance';
 import {
   Button,
